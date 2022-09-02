@@ -32,7 +32,11 @@ function generateSqlAnonymizeFieldsInTable(
       .map((f) => {
         const fieldName = typeof f === 'string' ? f : f.name
         const functionName =
-          typeof f === 'string' ? 'anonymize' : 'anonymize_array'
+          typeof f === 'string'
+            ? 'anonymize'
+            : f.type === 'array_of_string'
+            ? 'anonymize_array'
+            : 'anonymize_json_obj'
 
         return `${fieldName} = ${functionName}(${fieldName})`
       })
