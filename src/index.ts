@@ -6,7 +6,7 @@ import {
 import { doExportImport } from './importexport'
 import { createPool, readFromEnv, runSqlsSequentially } from './utils'
 
-const sourceDbUrl = readFromEnv('TEST_DB_MAIN_URL')
+const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
 
 // This is only a tiny part of the name, it should be safe to commit
@@ -51,7 +51,7 @@ function generateSqlAnonymizeFieldsInTable(
 
 async function start() {
   checkWorkingOnAnonDb()
-  // doExportImport({ sourceDbUrl, anonDbUrl })
+  doExportImport({ sourceDbUrl, anonDbUrl })
   const pool = createPool(anonDbUrl)
   await runSqlsSequentially(pool, createAnonymizeFunctionsSql)
   const anonymizationQueries = Object.entries(fieldsToAnonymizeByTable).map(
