@@ -1,9 +1,10 @@
 import {
-  createAnonymizeFunctionSql,
+  createAnonymizeFunctionsSql,
+  FieldDefinition,
   fieldsToAnonymizeByTable,
 } from './anonymizationRules'
 import { doExportImport } from './importexport'
-import { createPool, readFromEnv, runSql, runSqlsSequentially } from './utils'
+import { createPool, readFromEnv, runSqlsSequentially } from './utils'
 
 const sourceDbUrl = readFromEnv('TEST_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
@@ -22,9 +23,20 @@ function checkWorkingOnAnonDb() {
 
 const pool = createPool(anonDbUrl)
 
-function generateSqlAnonymizeFieldsInTable(table: string, fields: string[]) {
+function generateSqlAnonymizeFieldsInTable(
+  table: string,
+  fields: FieldDefinition[],
+) {
   if (fields.length) {
-    const fieldsUpdate = fields.map((f) => `${f} = anonymize(${f})`).join(',\n')
+    const fieldsUpdate = fields
+      .map((f) => {
+        const fieldName = typeof f === 'string' ? f : f.name
+        const functionName =
+          typeof f === 'string' ? 'anonymize' : 'anonymize_array'
+
+        return `${fieldName} = ${functionName}(${fieldName})`
+      })
+      .join(',\n')
     return `
     UPDATE ${table}
     SET ${fieldsUpdate}
@@ -35,9 +47,9 @@ function generateSqlAnonymizeFieldsInTable(table: string, fields: string[]) {
 
 async function start() {
   checkWorkingOnAnonDb()
-  doExportImport({ sourceDbUrl, anonDbUrl })
+  // doExportImport({ sourceDbUrl, anonDbUrl })
   const pool = createPool(anonDbUrl)
-  await runSql(pool, createAnonymizeFunctionSql)
+  await runSqlsSequentially(pool, createAnonymizeFunctionsSql)
   const anonymizationQueries = Object.entries(fieldsToAnonymizeByTable).map(
     ([table, fields]) => generateSqlAnonymizeFieldsInTable(table, fields),
   )

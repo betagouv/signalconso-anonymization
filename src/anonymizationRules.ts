@@ -1,4 +1,13 @@
-export const fieldsToAnonymizeByTable: { [table: string]: string[] } = {
+export type FieldDefinition =
+  | string
+  | {
+      name: string
+      type: 'array_of_string' | 'json'
+    }
+
+export const fieldsToAnonymizeByTable: {
+  [table: string]: FieldDefinition[]
+} = {
   access_tokens: ['emailed_to'],
   auth_attempts: ['login'],
   companies: ['siret', 'name', 'street', 'address_supplement'],
@@ -19,6 +28,7 @@ export const fieldsToAnonymizeByTable: { [table: string]: string[] } = {
     'host',
     'consumer_phone',
     'consumer_reference_number',
+    { name: 'details', type: 'array_of_string' },
   ],
   // TODO a reactiver : existe en prod uniquement
   // reports_old: [
@@ -36,11 +46,12 @@ export const fieldsToAnonymizeByTable: { [table: string]: string[] } = {
   websites: ['host'],
 
   // jsons à gérer
-  // events -> details
-  // reports -> details
+  // events -> details (jsonb)
+  // reports -> details (details character varying[] NOT NULL)
 }
 
-export const createAnonymizeFunctionSql = `
+export const createAnonymizeFunctionsSql = [
+  `
 CREATE OR REPLACE FUNCTION anonymize(
   str TEXT
 )
@@ -52,9 +63,25 @@ CREATE OR REPLACE FUNCTION anonymize(
       ELSE
         RETURN CONCAT('anon_', MD5(str));
       END IF;
-        END;
+      END;
   $$ 
 LANGUAGE plpgsql
 IMMUTABLE
+RETURNS NULL ON NULL INPUT   
+  `,
+  `
+CREATE OR REPLACE FUNCTION anonymize_array(
+  arr character varying[]
+)
+RETURNS character varying[]
+AS
+$$
+  BEGIN
+  RETURN array_agg(anonymize(n)) FROM unnest(arr) AS n;
+    END;
+$$
+LANGUAGE plpgsql
+IMMUTABLE
 RETURNS NULL ON NULL INPUT 
-    `
+  `,
+]
