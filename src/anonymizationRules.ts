@@ -53,13 +53,13 @@ CREATE OR REPLACE FUNCTION anonymize(
 )
   RETURNS TEXT 
   AS $$
-        BEGIN
-          IF str = '' THEN
-          RETURN '';
+    BEGIN
+      IF str = '' THEN
+        RETURN '';
       ELSE
         RETURN CONCAT('anon_', MD5(str));
       END IF;
-      END;
+    END;
   $$ 
 LANGUAGE plpgsql
 IMMUTABLE
@@ -72,14 +72,21 @@ CREATE OR REPLACE FUNCTION anonymize_array(
 RETURNS character varying[]
 AS
 $$
+  DECLARE
+    result character varying[];
   BEGIN
-  RETURN array_agg(anonymize(n)) FROM unnest(arr) AS n;
-    END;
+      result := array_agg(anonymize(n)) FROM unnest(arr) AS n;
+      IF result IS NULL THEN
+        RETURN ARRAY[]::character varying[];
+      ELSE
+        RETURN result;
+      END IF;
+  END;
 $$
 LANGUAGE plpgsql
 IMMUTABLE
-RETURNS NULL ON NULL INPUT 
-  `,
+RETURNS NULL ON NULL INPUT
+`,
 
   `
 CREATE OR REPLACE FUNCTION anonymize_json_obj(
@@ -88,9 +95,16 @@ CREATE OR REPLACE FUNCTION anonymize_json_obj(
 RETURNS jsonb
 AS
 $$
+  DECLARE
+    result jsonb;
   BEGIN
-  RETURN json_object_agg(key, anonymize(value)) FROM jsonb_each_text(json_obj);
-    END;
+    result := json_object_agg(key, anonymize(value)) FROM jsonb_each_text(json_obj);
+    IF result IS NULL THEN
+      RETURN '{}'::jsonb;
+    ELSE
+      RETURN result;
+    END IF;
+  END;
 $$
 LANGUAGE plpgsql
 IMMUTABLE
