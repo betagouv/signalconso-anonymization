@@ -46,8 +46,7 @@ export const fieldsToAnonymizeByTable: {
   // sendinblue: ['subject', 'destination', 'mid'],
 }
 
-export const createAnonymizeFunctionsSql = [
-  `
+const anonymizeFunctionSql = `
 CREATE OR REPLACE FUNCTION anonymize(
   str TEXT
 )
@@ -64,31 +63,32 @@ CREATE OR REPLACE FUNCTION anonymize(
 LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT   
-  `,
   `
-CREATE OR REPLACE FUNCTION anonymize_array(
-  arr character varying[]
-)
-RETURNS character varying[]
-AS
-$$
-  DECLARE
-    result character varying[];
-  BEGIN
-      result := array_agg(anonymize(n)) FROM unnest(arr) AS n;
-      IF result IS NULL THEN
-        RETURN ARRAY[]::character varying[];
-      ELSE
-        RETURN result;
-      END IF;
-  END;
-$$
-LANGUAGE plpgsql
-IMMUTABLE
-RETURNS NULL ON NULL INPUT
-`,
 
+const anonymizeArrayFunctionSql = `
+  CREATE OR REPLACE FUNCTION anonymize_array(
+    arr character varying[]
+  )
+  RETURNS character varying[]
+  AS
+  $$
+    DECLARE
+      result character varying[];
+    BEGIN
+        result := array_agg(anonymize(n)) FROM unnest(arr) AS n;
+        IF result IS NULL THEN
+          RETURN ARRAY[]::character varying[];
+        ELSE
+          RETURN result;
+        END IF;
+    END;
+  $$
+  LANGUAGE plpgsql
+  IMMUTABLE
+  RETURNS NULL ON NULL INPUT
   `
+
+const anonymizeJsonObjFunctionSql = `
 CREATE OR REPLACE FUNCTION anonymize_json_obj(
   json_obj jsonb
 )
@@ -109,5 +109,10 @@ $$
 LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT 
-  `,
+  `
+
+export const anonymizationFunctionsSql = [
+  anonymizeFunctionSql,
+  anonymizeArrayFunctionSql,
+  anonymizeJsonObjFunctionSql,
 ]
