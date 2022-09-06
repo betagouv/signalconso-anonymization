@@ -1,7 +1,11 @@
 import { anonymizationFunctionsSql } from './anonymizationRules'
-import { doExportImport, generateAnonymizationSqlForAllTables } from './core'
+import {
+  doExportImport,
+  doExportImportAndAnonymization,
+  generateAnonymizationSqlForAllTables,
+} from './core'
 import { createPool, readFromEnv, runSqlsSequentially } from './utils'
-
+import express, { Request, Response } from 'express'
 // Notes et caveats
 //
 // - le dump/restore crache plein d'erreurs liées aux permissions/users.
@@ -16,6 +20,8 @@ import { createPool, readFromEnv, runSqlsSequentially } from './utils'
 
 const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
+const port = process.env.PORT
+const apiKey = process.env.API_KEY
 
 // This is only a tiny part of the name, it should be safe to commit
 const partOfAnonDbName = 'byk8h'
@@ -29,15 +35,33 @@ function checkWorkingOnAnonDb() {
   }
 }
 
-const pool = createPool(anonDbUrl)
+async function startServer() {
+  const app = express()
+
+  app.get('/', (_, res: Response) => {
+    res.json({ message: 'Hello anonymization app' })
+  })
+
+  app.post('/', async (req: Request, res: Response) => {
+    const authorizationHeader = req.headers.authorization ?? ''
+    if (authorizationHeader === `Bearer ${apiKey}`) {
+      await doExportImportAndAnonymization({ sourceDbUrl, anonDbUrl })
+      res.json({ message: 'Import/export and anonymization done' })
+    } else {
+      res
+        .sendStatus(401)
+        .json({ message: 'Missing or incorrect authentication' })
+    }
+  })
+
+  app.listen(port, () => {
+    console.log(`Anonymization app is running on port ${port}`)
+  })
+}
 
 async function start() {
   checkWorkingOnAnonDb()
-  doExportImport({ sourceDbUrl, anonDbUrl })
-  const pool = createPool(anonDbUrl)
-  await runSqlsSequentially(pool, anonymizationFunctionsSql)
-  await runSqlsSequentially(pool, generateAnonymizationSqlForAllTables())
-  pool.end()
+  startServer()
 }
 
 start()

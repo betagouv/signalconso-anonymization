@@ -1,7 +1,25 @@
-import { FieldDefinition, fieldsToAnonymizeByTable } from './anonymizationRules'
-import { runCommand } from './utils'
+import {
+  anonymizationFunctionsSql,
+  FieldDefinition,
+  fieldsToAnonymizeByTable,
+} from './anonymizationRules'
+import { createPool, runCommand, runSqlsSequentially } from './utils'
 
-export function doExportImport({
+export async function doExportImportAndAnonymization({
+  sourceDbUrl,
+  anonDbUrl,
+}: {
+  sourceDbUrl: string
+  anonDbUrl: string
+}) {
+  doExportImport({ sourceDbUrl, anonDbUrl })
+  const pool = createPool(anonDbUrl)
+  await runSqlsSequentially(pool, anonymizationFunctionsSql)
+  await runSqlsSequentially(pool, generateAnonymizationSqlForAllTables())
+  pool.end()
+}
+
+function doExportImport({
   sourceDbUrl,
   anonDbUrl,
 }: {
@@ -25,7 +43,7 @@ export function doExportImport({
   console.log('Export/import terminé')
 }
 
-export function generateAnonymizationSqlForAllTables(): string[] {
+function generateAnonymizationSqlForAllTables(): string[] {
   return Object.entries(fieldsToAnonymizeByTable).map(([table, fields]) =>
     generateSqlAnonymizeFieldsInTable(table, fields),
   )
