@@ -2,18 +2,24 @@ import express, { Request, Response } from 'express'
 import { doExportImportAndAnonymization } from './core'
 import { readFromEnv, readIntFromEnv } from './utils'
 
-// Notes et caveats
-//
-// - le dump/restore crache plein d'erreurs liées aux permissions/users.
-// C'est compliqué de comprendre pourquoi, j'ai choisi de juste les ignorer.
-// Les tables et leurs contenus sont bien importés
-//
-// - le dump/restore n'efface pas la db anon existante. Il écrase juste les tables existant déjà
-// Si quelqu'un crée une table, ou une fonction, etc. sur la db anon, elle restera là
-// On pourrait essayer de faire un vrai si besoin.
-//
-// - la fonction d'anonymisation fait juste un hash MD5 de certains champs choisis
-//
+/*
+Notes et caveats
+
+- le dump ne marchera pas si vous utilisez un utilisateur readonly sur la DB source (bien qu'on ne fasse que lire).
+Utilisez la connection string donnée par Clever Cloud
+
+- le dump/restore crache plein d'erreurs liées aux permissions/users.
+C'est compliqué de comprendre pourquoi, j'ai choisi de juste les ignorer.
+Les tables et leurs contenus sont bien importés
+
+- le dump/restore n'efface pas la db anon existante. Il écrase juste les tables existant déjà
+Si quelqu'un crée une table, ou une fonction, etc. sur la db anon, elle restera là
+On pourrait essayer de faire un vrai reset du schema si besoin.
+
+- la fonction d'anonymisation fait juste un hash MD5 de certains champs choisis.
+Pour certains champs JSON ou tableau de strings, elle fait cet hash sur chacun des champs
+
+*/
 
 const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
