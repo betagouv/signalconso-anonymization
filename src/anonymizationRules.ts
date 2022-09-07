@@ -34,16 +34,16 @@ export const fieldsToAnonymizeByTable: {
   subscriptions: ['email'],
   users: ['firstname', 'lastname', 'email'],
   websites: ['host'],
-  // TODO tables à reactiver : existe en prod uniquement
-  // reports_old: [
-  //   'place',
-  //   'place_address',
-  //   'description',
-  //   'firstname',
-  //   'lastname',
-  //   'email',
-  // ],
-  // sendinblue: ['subject', 'destination', 'mid'],
+  // Notes : les tables suivantes existent sur la db de prod mais pas celle de démo...
+  reports_old: [
+    'place',
+    'place_address',
+    'description',
+    'firstname',
+    'lastname',
+    'email',
+  ],
+  sendinblue: ['subject', 'destination', 'mid'],
 }
 
 const anonymizeFunctionSql = `
