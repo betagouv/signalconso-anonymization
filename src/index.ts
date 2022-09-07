@@ -12,7 +12,8 @@ import { readFromEnv, readIntFromEnv } from './utils'
 // Si quelqu'un crée une table, ou une fonction, etc. sur la db anon, elle restera là
 // On pourrait essayer de faire un vrai si besoin.
 //
-// - la fonction d'anonymisation fait juste un hash MD5 de certains champs
+// - la fonction d'anonymisation fait juste un hash MD5 de certains champs choisis
+//
 
 const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
@@ -54,6 +55,7 @@ async function startServer() {
 }
 
 async function start() {
+  console.log('Starting anonymization app')
   checkWorkingOnAnonDb()
   startServer()
 }
