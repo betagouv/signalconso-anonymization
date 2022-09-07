@@ -1,11 +1,7 @@
-import { anonymizationFunctionsSql } from './anonymizationRules'
-import {
-  doExportImport,
-  doExportImportAndAnonymization,
-  generateAnonymizationSqlForAllTables,
-} from './core'
-import { createPool, readFromEnv, runSqlsSequentially } from './utils'
 import express, { Request, Response } from 'express'
+import { doExportImportAndAnonymization } from './core'
+import { readFromEnv, readIntFromEnv } from './utils'
+
 // Notes et caveats
 //
 // - le dump/restore crache plein d'erreurs liées aux permissions/users.
@@ -20,8 +16,8 @@ import express, { Request, Response } from 'express'
 
 const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
-const port = process.env.PORT
-const apiKey = process.env.API_KEY
+const port = readIntFromEnv('PORT')
+const apiKey = readFromEnv('API_KEY')
 
 // This is only a tiny part of the name, it should be safe to commit
 const partOfAnonDbName = 'byk8h'
@@ -42,15 +38,13 @@ async function startServer() {
     res.json({ message: 'Hello anonymization app' })
   })
 
-  app.post('/', async (req: Request, res: Response) => {
+  app.post('/launch', async (req: Request, res: Response) => {
     const authorizationHeader = req.headers.authorization ?? ''
     if (authorizationHeader === `Bearer ${apiKey}`) {
       await doExportImportAndAnonymization({ sourceDbUrl, anonDbUrl })
       res.json({ message: 'Import/export and anonymization done' })
     } else {
-      res
-        .sendStatus(401)
-        .json({ message: 'Missing or incorrect authentication' })
+      res.status(401).json({ message: 'Missing or incorrect authentication' })
     }
   })
 

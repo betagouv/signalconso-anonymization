@@ -39,3 +39,15 @@ export function readFromEnv(envVariableName: string): string {
   }
   return value
 }
+
+export function readIntFromEnv(envVariableName: string): number {
+  const value = process.env[envVariableName]
+  if (!value) {
+    throw new Error(`missing or empty env variable ${envVariableName}`)
+  }
+  try {
+    return parseInt(value, 10)
+  } catch (err) {
+    throw new Error(`invalid env variable ${envVariableName}`)
+  }
+}
