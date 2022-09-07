@@ -115,6 +115,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node-cron@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@types/node-cron@npm:3.0.4"
+  checksum: 52d87ca7b64a941a2bfcca56dd823456d0cefacdfbfbed1c5d6ba92c8d60205ad0d42d14f676f96b12cc715f671a0392d82e82b79dda7e943398c996f86d2e33
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:^18.7.14":
   version: 18.7.14
   resolution: "@types/node@npm:18.7.14"
@@ -190,8 +197,10 @@ __metadata:
     "@tsconfig/node16": ^1.0.3
     "@types/express": ^4.17.13
     "@types/node": ^18.7.14
+    "@types/node-cron": ^3.0.4
     "@types/pg": ^8.6.5
     express: ^4.18.1
+    node-cron: ^3.0.2
     pg: ^8.8.0
     prettier: ^2.7.1
     ts-node: ^10.9.1
@@ -564,6 +573,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-cron@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "node-cron@npm:3.0.2"
+  dependencies:
+    uuid: 8.3.2
+  checksum: dd21585c0d4069a0752022dad9b8380a4393c4783ec78355ffa99ff32b018c3743a35d4ebf9d7c7863949e94e302b440f58c884eb4960e71c7260d817e2d3f25
+  languageName: node
+  linkType: hard
+
 "object-inspect@npm:^1.9.0":
   version: 1.12.2
   resolution: "object-inspect@npm:1.12.2"
@@ -915,6 +933,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid@npm:8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
   languageName: node
   linkType: hard
 

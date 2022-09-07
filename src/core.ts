@@ -12,11 +12,13 @@ export async function doExportImportAndAnonymization({
   sourceDbUrl: string
   anonDbUrl: string
 }) {
+  console.log('Starting of import/export/anonymization')
   doExportImport({ sourceDbUrl, anonDbUrl })
   const pool = createPool(anonDbUrl)
   await runSqlsSequentially(pool, anonymizationFunctionsSql)
   await runSqlsSequentially(pool, generateAnonymizationSqlForAllTables())
   pool.end()
+  console.log('End of import/export/anonymization')
 }
 
 function doExportImport({
