@@ -21,7 +21,7 @@ const port = readIntFromEnv('PORT')
 const apiKey = readFromEnv('API_KEY')
 
 // This is only a tiny part of the name, it should be safe to commit
-const partOfAnonDbName = 'byk8h'
+const partOfAnonDbName = 'bs474'
 
 function checkWorkingOnAnonDb() {
   // an accidental misconfiguration could easily happen and rewrite the wrong database
