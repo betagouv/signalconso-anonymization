@@ -7,6 +7,7 @@ const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
 const apiKey = readFromEnv('API_KEY')
 const port = 8080
+const cronPattern = '0 5 * * *' // Every night at 5AM
 
 // This is only a tiny part of the name, it should be safe to commit
 const partOfAnonDbName = 'bs474'
@@ -45,13 +46,14 @@ async function startServer() {
 async function start() {
   console.log('Starting anonymization app')
   checkWorkingOnAnonDb()
-  startServer()
 
-  // Every night at 5AM
-  cron.schedule('0 5 * * *', () => {
+  console.log('Scheduling cron with pattern', cronPattern)
+  cron.schedule(cronPattern, () => {
     console.log('Launching scheduled task')
     doExportImportAndAnonymization({ sourceDbUrl, anonDbUrl })
   })
+
+  startServer()
 }
 
 start()
