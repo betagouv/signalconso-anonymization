@@ -23,8 +23,8 @@ Pour certains champs JSON ou tableau de strings, elle fait cet hash sur chacun d
 
 const sourceDbUrl = readFromEnv('SOURCE_DB_MAIN_URL')
 const anonDbUrl = readFromEnv('ANON_DB_MAIN_URL')
-const port = readIntFromEnv('PORT')
 const apiKey = readFromEnv('API_KEY')
+const port = 8080
 
 // This is only a tiny part of the name, it should be safe to commit
 const partOfAnonDbName = 'bs474'
