@@ -11,8 +11,6 @@ Ce process peut-être déclenché ponctuellement en tapant sur l'endpoint /launc
 
 ## Caveats
 
-Utilisez la connection string donnée par Clever Cloud
-
 /!\ le dump/restore crache plein d'erreurs liées aux permissions/users.
 C'est compliqué de comprendre pourquoi, j'ai choisi de juste les ignorer.
 Les tables et leurs contenus sont bien importés
