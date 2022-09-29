@@ -32,7 +32,7 @@ export const fieldsToAnonymizeByTable: {
     { name: 'details', type: 'array_of_string' },
   ],
   subscriptions: ['email'],
-  users: ['firstname', 'lastname', 'email'],
+  users: ['login', 'firstname', 'lastname', 'email'],
   websites: ['host'],
   // Notes : les tables suivantes existent sur la db de prod mais pas celle de démo...
   reports_old: [
