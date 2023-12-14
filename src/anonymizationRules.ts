@@ -32,7 +32,6 @@ export const fieldsToAnonymizeByTable: {
     { name: 'details', type: 'array_of_string' },
     'influencer_name',
     'company_brand',
-    'barcode_product_id'
   ],
   subscriptions: ['email'],
   users: ['login', 'firstname', 'lastname', 'email'],
