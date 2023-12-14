@@ -10,7 +10,7 @@ export const fieldsToAnonymizeByTable: {
 } = {
   access_tokens: ['emailed_to'],
   auth_attempts: ['login'],
-  companies: ['siret', 'name', 'street', 'address_supplement'],
+  companies: ['siret', 'name', 'street', 'address_supplement', 'brand'],
   emails_validation: ['email'],
   events: [{ name: 'details', type: 'json' }],
   report_consumer_review: ['details'],
@@ -30,20 +30,16 @@ export const fieldsToAnonymizeByTable: {
     'consumer_phone',
     'consumer_reference_number',
     { name: 'details', type: 'array_of_string' },
+    'influencer_name',
+    'company_brand',
+    'barcode_product_id'
   ],
   subscriptions: ['email'],
   users: ['login', 'firstname', 'lastname', 'email'],
   websites: ['host'],
-  // Notes : les tables suivantes existent sur la db de prod mais pas celle de démo...
-  reports_old: [
-    'place',
-    'place_address',
-    'description',
-    'firstname',
-    'lastname',
-    'email',
-  ],
-  sendinblue: ['subject', 'destination', 'mid'],
+  blacklisted_emails: ['email', 'comments'],
+  signalconso_review: ['details'],
+  company_activation_attempts: ['siret'],
 }
 
 const anonymizeFunctionSql = `
