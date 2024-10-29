@@ -51,7 +51,7 @@ CREATE OR REPLACE FUNCTION anonymize(
       IF str = '' THEN
         RETURN '';
       ELSE
-        RETURN CONCAT('anon_', MD5(str));
+        RETURN CONCAT('anon_', LEFT(MD5(str), 8));
       END IF;
     END;
   $$ 
