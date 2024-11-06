@@ -8,7 +8,7 @@ export const conf = {
 }
 
 // This is only a tiny part of the name, it should be safe to commit
-const partOfAnonDbName = 'bs474'
+const partOfAnonDbName = '5vid8rv'
 
 export function checkWorkingOnAnonDb() {
   // an accidental misconfiguration could easily happen and rewrite the wrong database

@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express, { Request, Response } from 'express'
 import cron from 'node-cron'
 import { checkWorkingOnAnonDb, conf } from './conf'
@@ -23,7 +24,7 @@ async function startServer() {
 }
 
 async function start() {
-  console.log('Starting anonymization app')
+  console.log('~~ Starting anonymization app ~~')
   checkWorkingOnAnonDb()
 
   console.log('Scheduling cron with pattern', conf.cronPattern)

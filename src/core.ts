@@ -4,19 +4,24 @@ import { anonDbResetSqls, Schema } from './schema'
 import { md5, startConnectionPool } from './utils'
 
 export async function recreateAnonDb() {
-  const source = startConnectionPool('source_db')
-  const anon = startConnectionPool('anon_db')
-  await resetAnonDb({ anon })
-  await processReports({ source, anon })
-  await processCompanyAccesses({ source, anon })
-  await processCompanies({ source, anon })
-  await processEvents({ source, anon })
-  source.destroy()
-  anon.destroy()
+  try {
+    const source = startConnectionPool('source_db')
+    const anon = startConnectionPool('anon_db')
+    await resetAnonDb({ anon })
+    await processReports({ source, anon })
+    await processCompanyAccesses({ source, anon })
+    await processCompanies({ source, anon })
+    await processEvents({ source, anon })
+    source.destroy()
+    anon.destroy()
+  } catch (err) {
+    console.error('Anon db recreation failed', err)
+  }
 }
 
 async function resetAnonDb({ anon }: { anon: Kysely<Schema> }) {
   for (const sqlQuery of anonDbResetSqls) {
+    console.log('Running', sqlQuery)
     await sqlQuery.execute(anon)
   }
 }
@@ -90,8 +95,8 @@ async function processCompanies({
     query: (offset, limit) =>
       source
         .selectFrom(table)
-        .select(['company_id', 'department'])
-        .orderBy('company_id')
+        .select(['id', 'department'])
+        .orderBy('id')
         .offset(offset)
         .limit(limit)
         .execute(),
@@ -136,6 +141,7 @@ async function copyTableByBatches<RowRead, RowToInsert>(
     insert: (rows: RowToInsert[]) => Promise<unknown>
   },
 ) {
+  console.log(`Starting to copy table ${table}`)
   let offset = 0
   while (true) {
     // select a batch of rows from the source db

@@ -17,7 +17,7 @@ export type Schema = {
     company_id: string
   }
   companies: {
-    company_id: string
+    id: string
     department: string | undefined
   }
   events: {
@@ -46,7 +46,7 @@ export const anonDbResetSqls = [
   )`,
   sql`DROP TABLE IF EXISTS companies`,
   sql`CREATE TABLE companies (
-      company_id uuid NOT NULL,
+      id uuid NOT NULL,
       department text
   )`,
   sql`DROP TABLE IF EXISTS events`,

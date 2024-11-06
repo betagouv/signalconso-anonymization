@@ -1,6 +1,7 @@
 # anonymization
 
 TODO updater readme
+TODO decider si je renomme tout en "anon" ou "stats"
 
 ## Fonctionnement
 
