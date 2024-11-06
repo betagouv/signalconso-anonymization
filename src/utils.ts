@@ -1,53 +1,23 @@
-import { execSync } from 'child_process'
+import { createHash } from 'crypto'
+import { Kysely, PostgresDialect } from 'kysely'
 import { Pool } from 'pg'
+import { conf } from './conf'
+import { Schema } from './schema'
 
-export function runCommand(cmd: string) {
-  console.log('>> ', cmd)
-  execSync(cmd, { stdio: 'inherit' })
-}
-
-export function createPool(connectionString: string) {
-  return new Pool({
-    connectionString,
+export function startConnectionPool(target: 'source_db' | 'anon_db') {
+  // same Schema is shared for both DBs
+  const db = new Kysely<Schema>({
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        connectionString:
+          target === 'source_db' ? conf.sourceDbUrl : conf.anonDbUrl,
+        max: 1,
+      }),
+    }),
   })
+  return db
 }
 
-export async function runSql(pool: Pool, sql: string): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    console.log('>> Running SQL:', sql)
-    pool.query(sql, (err, res) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-
-export async function runSqlsSequentially(pool: Pool, queries: string[]) {
-  return await queries.reduce(async (acc, current) => {
-    await acc
-    return runSql(pool, current)
-  }, Promise.resolve())
-}
-
-export function readFromEnv(envVariableName: string): string {
-  const value = process.env[envVariableName]
-  if (!value) {
-    throw new Error(`missing or empty env variable ${envVariableName}`)
-  }
-  return value
-}
-
-export function readIntFromEnv(envVariableName: string): number {
-  const value = process.env[envVariableName]
-  if (!value) {
-    throw new Error(`missing or empty env variable ${envVariableName}`)
-  }
-  try {
-    return parseInt(value, 10)
-  } catch (err) {
-    throw new Error(`invalid env variable ${envVariableName}`)
-  }
+export function md5(s: string) {
+  return createHash('md5').update(s).digest('hex')
 }

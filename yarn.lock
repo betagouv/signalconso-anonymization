@@ -200,8 +200,9 @@ __metadata:
     "@types/node-cron": ^3.0.4
     "@types/pg": ^8.6.5
     express: ^4.18.1
+    kysely: ^0.27.4
     node-cron: ^3.0.2
-    pg: ^8.8.0
+    pg: ^8.13.1
     prettier: ^2.7.1
     ts-node: ^10.9.1
     typescript: ^4.8.2
@@ -239,13 +240,6 @@ __metadata:
     type-is: ~1.6.18
     unpipe: 1.0.0
   checksum: 12fffdeac82fe20dddcab7074215d5156e7d02a69ae90cbe9fee1ca3efa2f28ef52097cbea76685ee0a1509c71d85abd0056a08e612c09077cad6277a644cf88
-  languageName: node
-  linkType: hard
-
-"buffer-writer@npm:2.0.0":
-  version: 2.0.0
-  resolution: "buffer-writer@npm:2.0.0"
-  checksum: 11736b48bb75106c52ca8ec9f025e7c1b3b25ce31875f469d7210eabd5c576c329e34f6b805d4a8d605ff3f0db1e16342328802c4c963e9c826b0e43a4e631c2
   languageName: node
   linkType: hard
 
@@ -499,6 +493,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely@npm:^0.27.4":
+  version: 0.27.4
+  resolution: "kysely@npm:0.27.4"
+  checksum: 16b7e90eb70edb91d15d5f4816e9e84abf7cbaf7125cb04ce4bddb41f965495ec25796918ef1ab678656b49be328147a1d054ad580a390d0a6dd67c7a5793c8b
+  languageName: node
+  linkType: hard
+
 "make-error@npm:^1.1.1":
   version: 1.3.6
   resolution: "make-error@npm:1.3.6"
@@ -598,13 +599,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"packet-reader@npm:1.0.0":
-  version: 1.0.0
-  resolution: "packet-reader@npm:1.0.0"
-  checksum: 0b7516f0cbf3e322aad591bed29ba544220088c53943145c0d9121a6f59182ad811f7fd6785a8979a34356aca69d97653689029964c5998dc02645633d88ffd7
-  languageName: node
-  linkType: hard
-
 "parseurl@npm:~1.3.3":
   version: 1.3.3
   resolution: "parseurl@npm:1.3.3"
@@ -619,10 +613,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-connection-string@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "pg-connection-string@npm:2.5.0"
-  checksum: a6f3a068f7c9416a5b33a326811caf0dfaaee045c225b7c628b4c9b4e9a2b25bdd12a21e4c48940e1000ea223a4e608ca122d2ff3dd08c8b1db0fc9f5705133a
+"pg-cloudflare@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "pg-cloudflare@npm:1.1.1"
+  checksum: 32aac06b5dc4588bbf78801b6267781bc7e13be672009df949d08e9627ba9fdc26924916665d4de99d47f9b0495301930547488dad889d826856976c7b3f3731
+  languageName: node
+  linkType: hard
+
+"pg-connection-string@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "pg-connection-string@npm:2.7.0"
+  checksum: 68015a8874b7ca5dad456445e4114af3d2602bac2fdb8069315ecad0ff9660ec93259b9af7186606529ac4f6f72a06831e6f20897a689b16cc7fda7ca0e247fd
   languageName: node
   linkType: hard
 
@@ -633,19 +634,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-pool@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "pg-pool@npm:3.5.2"
+"pg-pool@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "pg-pool@npm:3.7.0"
   peerDependencies:
     pg: ">=8.0"
-  checksum: a5d029200257671f0c17ca54b9ab6213e2060e64e5cc792b78edd50ab471a26cd364890d05d546d9296949e079e943821cf2ceb4d488f4e6a6789fb781a628bf
+  checksum: 66fc1a5ad0e17b72671b9a2cd4c7a856fb08d3cb82da7af0b322590ada23127ac591111e855740405fde4f06c9de888abe9f3aa685ed6038c3232578e1fce8cf
   languageName: node
   linkType: hard
 
-"pg-protocol@npm:*, pg-protocol@npm:^1.5.0":
+"pg-protocol@npm:*":
   version: 1.5.0
   resolution: "pg-protocol@npm:1.5.0"
   checksum: b839d12cafe942ef9cbc5b13c174eb2356804fb4fe8ead8279f46a36be90722d19a91409955beb8a3d5301639c44854e49749de4aef02dc361fee3e2a61fb1e4
+  languageName: node
+  linkType: hard
+
+"pg-protocol@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "pg-protocol@npm:1.7.0"
+  checksum: 2dba740f6fc4b7f9761682c4c42d183b444292cdc7638b373f5247ec995c8199c369953343479281da3c41611fe34130a80c8668348d49a399c164f802f76be2
   languageName: node
   linkType: hard
 
@@ -662,23 +670,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:^8.8.0":
-  version: 8.8.0
-  resolution: "pg@npm:8.8.0"
+"pg@npm:^8.13.1":
+  version: 8.13.1
+  resolution: "pg@npm:8.13.1"
   dependencies:
-    buffer-writer: 2.0.0
-    packet-reader: 1.0.0
-    pg-connection-string: ^2.5.0
-    pg-pool: ^3.5.2
-    pg-protocol: ^1.5.0
+    pg-cloudflare: ^1.1.1
+    pg-connection-string: ^2.7.0
+    pg-pool: ^3.7.0
+    pg-protocol: ^1.7.0
     pg-types: ^2.1.0
     pgpass: 1.x
   peerDependencies:
     pg-native: ">=3.0.1"
+  dependenciesMeta:
+    pg-cloudflare:
+      optional: true
   peerDependenciesMeta:
     pg-native:
       optional: true
-  checksum: fa30a85814dd7238b582c3bc6c0b9e2b0ae38dd0a6bb485ef480e64bb5ce589de6cb873ce4d3cd10c37a3e0a1e1281ba75dc7d80b1a68bae91999cd5b70d398b
+  checksum: 22cb97fcbee3348d5ee0b195071cc572f9c88eb40cbb61fe6726af68d55d5962121b2d630509bb907703e1c8bdc33de775462029c5399e2a841fa9e6c9da0242
   languageName: node
   linkType: hard
 

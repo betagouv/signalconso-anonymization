@@ -1,5 +1,7 @@
 # anonymization
 
+TODO updater readme
+
 ## Fonctionnement
 
 Toutes les nuits :
