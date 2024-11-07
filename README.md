@@ -1,32 +1,31 @@
-# anonymization
-
-TODO updater readme
+# StatsRefill
 
     curl -X POST http://localhost:8080/launch -H "Authorization: Bearer toto"
+
+## But
+
+Alimenter une DB "stats", toutes les nuits.
+
+- Cette DB est une copie extrêmement simplifiée de la DB de prod
+- Cette DB est anonymisée (le seul champ sensible, company_name, est hashé)
+- Cette DB sert pour le metabase des stats publiques (https://signal.conso.gouv.fr/fr/stats)
 
 ## Fonctionnement
 
 Toutes les nuits :
 
-- On fait un dump de la DB de prod et on l'import dans la db "anon"
-- Puis on fait une anonymization (juste un hash MD5) de plein de champs sensibles
+- Dans la DB "stats", on drop/recreate quelques tables (reports, companies, events, ...).
+  - On les crée avec juste quelques colonnes essentielles, que celles qui nous intéressent.
+- Pour chacun de ces tables, on query les lignes depuis la DB main de prod, puis on les insert dans la table équivalente dans la DB "stats"
+  - On fait la query puis insertion par batchs de 1000 lignes
+  - le champ company_name est anonymisée (il est utilisé dans une requête du Metabase)
 
 Ce process peut-être déclenché ponctuellement en tapant sur l'endpoint /launch
 
-## Caveats
-
-/!\ le dump/restore crache plein d'erreurs liées aux permissions/users.
-C'est compliqué de comprendre pourquoi, j'ai choisi de juste les ignorer.
-Les tables et leurs contenus sont bien importés
-
-/!\ le dump/restore n'efface pas la db anon existante. Il écrase juste les tables existant déjà
-Si quelqu'un crée une table, ou une fonction, etc. sur la db anon, elle restera là
-On pourrait essayer de faire un vrai reset du schema si besoin.
-
 ## Env variables
 
-- SOURCE_DB_MAIN_URL url JDBC de la db de prod. /!\ le dump ne marchera pas si vous utilisez un utilisateur readonly sur la DB source (bien qu'on ne fasse que lire)
-- STATS_DB_URL url JDBC de la db anon /!\ attention c'est celle qu'on va écraser !
+- SOURCE_DB_MAIN_URL url JDBC de la db anon (mettre ici l'utilisateur read only, plus safe !!)
+- STATS_DB_URL url JDBC de la db des stats /!\ attention c'est celle qu'on va écraser !
 - API_KEY
 - CC_NODE_BUILD_TOOL=yarn2 pour Clever Cloud
 - NODE_ENV=production à mettre en prod
