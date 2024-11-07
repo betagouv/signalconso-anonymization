@@ -1,7 +1,5 @@
 # StatsRefill
 
-    curl -X POST http://localhost:8080/launch -H "Authorization: Bearer toto"
-
 ## But
 
 Alimenter une DB "stats", toutes les nuits.
@@ -20,7 +18,9 @@ Toutes les nuits :
   - On fait la query puis insertion par batchs de 1000 lignes
   - le champ company_name est anonymisée (il est utilisé dans une requête du Metabase)
 
-Ce process peut-être déclenché ponctuellement en tapant sur l'endpoint /launch
+Ce process peut-être déclenché ponctuellement en tapant sur l'endpoint `/launch` :
+
+        curl -X POST https://.......:8080/launch -H "Authorization: Bearer XXXXXXX"
 
 ## Env variables
 
