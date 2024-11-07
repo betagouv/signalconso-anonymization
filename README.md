@@ -1,7 +1,8 @@
 # anonymization
 
 TODO updater readme
-TODO decider si je renomme tout en "anon" ou "stats"
+
+    curl -X POST http://localhost:8080/launch -H "Authorization: Bearer toto"
 
 ## Fonctionnement
 
@@ -25,7 +26,7 @@ On pourrait essayer de faire un vrai reset du schema si besoin.
 ## Env variables
 
 - SOURCE_DB_MAIN_URL url JDBC de la db de prod. /!\ le dump ne marchera pas si vous utilisez un utilisateur readonly sur la DB source (bien qu'on ne fasse que lire)
-- ANON_DB_MAIN_URL url JDBC de la db anon /!\ attention c'est celle qu'on va écraser !
+- STATS_DB_URL url JDBC de la db anon /!\ attention c'est celle qu'on va écraser !
 - API_KEY
 - CC_NODE_BUILD_TOOL=yarn2 pour Clever Cloud
 - NODE_ENV=production à mettre en prod

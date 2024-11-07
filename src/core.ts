@@ -1,37 +1,37 @@
 import { Kysely } from 'kysely'
 import { conf } from './conf'
-import { anonDbResetSqls, Schema } from './schema'
+import { Schema, statsDbResetSqls } from './schema'
 import { md5, startConnectionPool } from './utils'
 
-export async function recreateAnonDb() {
+export async function emptyAndRefillStatsDb() {
   try {
     const source = startConnectionPool('source_db')
-    const anon = startConnectionPool('anon_db')
-    await resetAnonDb({ anon })
-    await processReports({ source, anon })
-    await processCompanyAccesses({ source, anon })
-    await processCompanies({ source, anon })
-    await processEvents({ source, anon })
+    const stats = startConnectionPool('stats_db')
+    await resetStatsDb({ stats })
+    await processReports({ source, stats })
+    await processCompanyAccesses({ source, stats })
+    await processCompanies({ source, stats })
+    await processEvents({ source, stats })
     source.destroy()
-    anon.destroy()
+    stats.destroy()
   } catch (err) {
-    console.error('Anon db recreation failed', err)
+    console.error('Stats DB emptying+refill failed', err)
   }
 }
 
-async function resetAnonDb({ anon }: { anon: Kysely<Schema> }) {
-  for (const sqlQuery of anonDbResetSqls) {
+async function resetStatsDb({ stats }: { stats: Kysely<Schema> }) {
+  for (const sqlQuery of statsDbResetSqls) {
     console.log('Running', sqlQuery)
-    await sqlQuery.execute(anon)
+    await sqlQuery.execute(stats)
   }
 }
 
 async function processReports({
   source,
-  anon,
+  stats,
 }: {
   source: Kysely<Schema>
-  anon: Kysely<Schema>
+  stats: Kysely<Schema>
 }) {
   const table = 'reports'
   await copyTableByBatches(table, {
@@ -57,16 +57,16 @@ async function processReports({
         ? `anon_${md5(row.company_name)}`
         : undefined,
     }),
-    insert: (rows) => anon.insertInto(table).values(rows).execute(),
+    insert: (rows) => stats.insertInto(table).values(rows).execute(),
   })
 }
 
 async function processCompanyAccesses({
   source,
-  anon,
+  stats,
 }: {
   source: Kysely<Schema>
-  anon: Kysely<Schema>
+  stats: Kysely<Schema>
 }) {
   const table = 'company_accesses'
   await copyTableByBatches(table, {
@@ -79,16 +79,16 @@ async function processCompanyAccesses({
         .limit(limit)
         .execute(),
     transform: (r) => r,
-    insert: (rows) => anon.insertInto(table).values(rows).execute(),
+    insert: (rows) => stats.insertInto(table).values(rows).execute(),
   })
 }
 
 async function processCompanies({
   source,
-  anon,
+  stats,
 }: {
   source: Kysely<Schema>
-  anon: Kysely<Schema>
+  stats: Kysely<Schema>
 }) {
   const table = 'companies'
   await copyTableByBatches(table, {
@@ -101,16 +101,16 @@ async function processCompanies({
         .limit(limit)
         .execute(),
     transform: (r) => r,
-    insert: (rows) => anon.insertInto(table).values(rows).execute(),
+    insert: (rows) => stats.insertInto(table).values(rows).execute(),
   })
 }
 
 async function processEvents({
   source,
-  anon,
+  stats,
 }: {
   source: Kysely<Schema>
-  anon: Kysely<Schema>
+  stats: Kysely<Schema>
 }) {
   const table = 'events'
   await copyTableByBatches(table, {
@@ -125,7 +125,7 @@ async function processEvents({
         .limit(limit)
         .execute(),
     transform: (r) => r,
-    insert: (rows) => anon.insertInto(table).values(rows).execute(),
+    insert: (rows) => stats.insertInto(table).values(rows).execute(),
   })
 }
 

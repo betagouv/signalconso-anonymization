@@ -28,7 +28,7 @@ export type Schema = {
   }
 }
 
-export const anonDbResetSqls = [
+export const statsDbResetSqls = [
   sql`DROP TABLE IF EXISTS reports`,
   sql`CREATE TABLE reports (
       id uuid NOT NULL,

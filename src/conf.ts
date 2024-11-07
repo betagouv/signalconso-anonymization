@@ -1,6 +1,6 @@
 export const conf = {
   sourceDbUrl: readFromEnv('SOURCE_DB_MAIN_URL'),
-  anonDbUrl: readFromEnv('ANON_DB_MAIN_URL'),
+  statsDbUrl: readFromEnv('STATS_DB_URL'),
   apiKey: readFromEnv('API_KEY'),
   port: 8080,
   cronPattern: '0 5 * * *', // Every night at 5AM
@@ -8,13 +8,13 @@ export const conf = {
 }
 
 // This is only a tiny part of the name, it should be safe to commit
-const partOfAnonDbName = '5vid8rv'
+const partOfStatsDbName = '5vid8rv'
 
-export function checkWorkingOnAnonDb() {
+export function checkWorkingOnStatsDb() {
   // an accidental misconfiguration could easily happen and rewrite the wrong database
-  if (!conf.anonDbUrl.includes(partOfAnonDbName)) {
+  if (!conf.statsDbUrl.includes(partOfStatsDbName)) {
     throw new Error(
-      "The provided anon db URL (the one we will overwrite) doesn't look like the one we expect. Be careful, you could overwrite a production database !",
+      "The provided stats db URL (the one we will overwrite) doesn't look like the one we expect. Be careful, you could overwrite a production database !",
     )
   }
 }
