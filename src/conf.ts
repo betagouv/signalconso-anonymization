@@ -1,6 +1,6 @@
 export const conf = {
   sourceDbUrl: readFromEnv('SOURCE_DB_MAIN_URL'),
-  statsDbUrl: readFromEnv('STATS_DB_URL'),
+  statsDbUrl: readFromEnv('POSTGRESQL_ADDON_URI'),
   apiKey: readFromEnv('API_KEY'),
   port: 8080,
   cronPattern: '0 5 * * *', // Every night at 5AM
